@@ -13,24 +13,36 @@
     </style>
   </head>
   <body>
+    <!-- 1. Showing a Fortune -->
     <div>
-      <h1>Fortune Teller</h1>
+      <h1>1. Showing a Fortune</h1>
       <p>
         <button id="fortune-button">Get Your Fortune</button>
       </p>
-      <div id="fortune"></div>
+      <div id="fortune" aria-live="polite"></div>
       <br />
     </div>
+    <!-- 2. Getting a Random Fortune -->
     <div>
+      <h1>2. Getting a Random Fortune</h1>
       <p>
         <button id="shuffle-button">Shuffle array</button>
       </p>
-      <br />
       <div id="shuffle"></div>
-      <br />
-      <div id="shuffle2"></div>
     </div>
-
+    <!-- 3.ARIA Live Regions -->
+    <div>
+      <h1>3. ARIA Live Regions</h1>
+      <div id="app" aria-live="polite">
+        The content of this element is going to change after 5 seconds.
+      </div>
+    </div>
+    <!-- 4.Setting a timeout -->
+    <div>
+      <h1>4. Setting a timeout</h1>
+      <div id="app2" aria-live="polite"></div>
+    </div>
+    <!-- no1 script -->
     <script>
       const fortune = document.getElementById("fortune");
       const getbutton = document.getElementById("fortune-button");
@@ -38,7 +50,9 @@
       getbutton.addEventListener("click", () => {
         fortune.innerHTML = "You’re going to have a wonderful day!";
       });
-
+    </script>
+    <!-- no2 script -->
+    <script>
       let responses = [
         "It is certain.",
         "It is decidedly so.",
@@ -68,7 +82,6 @@
         "I see... I see...",
       ];
       const shuffle = document.getElementById("shuffle");
-      const shuffle2 = document.getElementById("shuffle2");
       const shufflebutton = document.getElementById("shuffle-button");
 
       function shuffle_fortune(arr1) {
@@ -77,33 +90,41 @@
         while (0 !== currentIndex) {
           randomIndex = Math.floor(Math.random() * currentIndex);
           currentIndex -= 1;
-          temporaryValue = responses[currentIndex];
-          responses[currentIndex] = responses[randomIndex];
-          responses[randomIndex] = temporaryValue;
-        }
-        return responses;
-      }
-      function shuffle_loading(arr1) {
-        let currentIndex = arr1.length;
-        let temporaryValue, randomIndex;
-        while (0 !== currentIndex) {
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex -= 1;
-          temporaryValue = loading[currentIndex];
-          loading[currentIndex] = loading[randomIndex];
-          loading[randomIndex] = temporaryValue;
+          temporaryValue = arr1[currentIndex];
+          arr1[currentIndex] = arr1[randomIndex];
+          arr1[randomIndex] = temporaryValue;
         }
         return responses;
       }
 
       shufflebutton.addEventListener("click", () => {
-        shuffle_loading(loading);
-        shuffle2.innerHTML = "Loading: " + loading[0];
-
+        shuffle_fortune(loading);
+        shuffle.innerHTML = "Loading: " + loading[0];
         setTimeout(() => {
           shuffle_fortune(responses);
-          shuffle2.innerHTML = "After shuffle: " + responses[0];
+          shuffle.innerHTML = "After shuffle: " + responses[0];
         }, 3000);
+      });
+    </script>
+    <!-- no3 script -->
+    <script>
+      let app = document.querySelector("#app");
+      setTimeout(function () {
+        app.textContent = "Whoa, this is new!";
+      }, 5000);
+    </script>
+    <!-- no4 script -->
+    <script>
+      let app2 = document.querySelector("#app2");
+      setTimeout(function () {
+        app2.textContent = `You've been logged out.`;
+      }, 4000);
+      let isActive = setTimeout(function () {
+        app.textContent = `You've been logged out.`;
+      }, 4000);
+      document.addEventListener("click", function () {
+        clearTimeout(isActive);
+        app.textContent = `You're still logged in, yay!`;
       });
     </script>
   </body>
